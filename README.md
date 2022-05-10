@@ -1,5 +1,5 @@
 # FourInARow-Assignment
-An artificial intelligence assignment in school. I chose to recreate the game "four in a row", using Godot 3.4.4 with c++(GDNative) as the scripting langauges.
+An artificial intelligence assignment in school. I chose to recreate the game "four in a row", using Godot 3.4.4 with c++(GDNative) as the scripting langauge.
 
 # Build script source (debug)
 cmake -B build -DCMAKE_BUILD_TYPE=Debug
@@ -10,3 +10,13 @@ cmake --build build --config Debug
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 
 cmake --build build --config Release
+
+# File Structure
+The Godot project is located in the folder "FourInARow".
+
+The Scripts are located in the folder "scripts-source".
+
+# Repository cloning
+If you wish to clone this. Do it recursively.
+
+git clone https://github.com/hallback01/FourInARow-Assignment.git --recursive

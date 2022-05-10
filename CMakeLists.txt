@@ -27,11 +27,11 @@ include_directories(fourinarow
 )
 
 # add source files
-file(GLOB_RECURSE source "scripts-source/*.cpp")
-file(GLOB_RECURSE headers "scripts-source/*.h**")
+file(GLOB_RECURSE script-source "scripts-source/*.cpp")
+file(GLOB_RECURSE script-headers "scripts-source/*.h**")
 
 # shared library
-add_library(fourinarow SHARED ${source} ${headers})
+add_library(fourinarow SHARED ${script-source} ${script-headers})
 
 # link godot-cpp with fourinarow script library
 target_link_libraries(fourinarow godot-cpp)
