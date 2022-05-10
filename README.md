@@ -27,3 +27,7 @@ The Scripts are located in the folder "scripts-source".
 If you wish to clone this. Do it recursively.
 
 git clone https://github.com/hallback01/FourInARow-Assignment.git --recursive
+
+# Attribution
+
+Coin/Token sprites https://opengameart.org/content/game-coins-sprite
