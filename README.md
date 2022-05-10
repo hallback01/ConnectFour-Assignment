@@ -6,7 +6,7 @@ Python 3.4 or higher
 
 CMake 3.18 or higher
 
-A C++ compiler with at least the 2014 standard. Tested with MSVC(On windows 10) and Clang(On macOS).
+A C++ compiler with at least the c++14 standard. Tested with MSVC(On windows 10) and Clang(On macOS).
 
 # Build script source (debug)
 cmake -B build -DCMAKE_BUILD_TYPE=Debug
