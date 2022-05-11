@@ -29,3 +29,4 @@ If you wish to clone this. Do it recursively.
 git clone https://github.com/hallback01/FourInARow-Assignment.git --recursive
 
 # Attribution
+Noto Sans Font https://fonts.google.com/noto/specimen/Noto+Sans
