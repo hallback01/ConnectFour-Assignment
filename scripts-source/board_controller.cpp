@@ -24,6 +24,9 @@ void BoardController::_init() {
     width = 7;
     height = 6;
     tile_color = Color(0.0, 0.0, 1.0);
+}
+
+void BoardController::_ready() {
 
     //initialize other constants
     texture_size = 256;
@@ -31,9 +34,6 @@ void BoardController::_init() {
     scaled_texture_size = (texture_size * scale);
     x_offset = ((-256.0*(float)width) / 2.0) * scale;
     y_offset = ((-256.0*(float)height) / 2.0) * scale + 96.0;
-}
-
-void BoardController::_ready() {
 
     //load the tile object scene
     ResourceLoader* resource_loader = ResourceLoader::get_singleton();
