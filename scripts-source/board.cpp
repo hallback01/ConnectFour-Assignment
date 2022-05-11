@@ -20,6 +20,19 @@ bool Board::is_row_full(uint8_t index) {
     return count == height;
 }
 
+//returns true if the entire board is filled with tokens
+bool Board::is_board_full() {
+
+    bool is_full = true;
+    for(uint8_t x = 0; x < width; x++) {
+        if(!is_row_full(x)) {
+            is_full = false;
+            break;
+        }
+    }
+    return is_full;
+}
+
 //returns the amount of tokens in a row
 uint8_t Board::get_row_count(uint8_t index) {
     return tokens[index].size();

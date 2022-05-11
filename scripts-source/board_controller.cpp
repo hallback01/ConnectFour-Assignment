@@ -1,7 +1,9 @@
 #include "board_controller.h"
-#include <ResourceLoader.hpp>
+#include "scene_manager.h"
 #include <Color.hpp>
+#include <SceneTree.hpp>
 #include <Input.hpp>
+#include <Viewport.hpp>
 #include <cassert>
 #include <cstdlib>
 #include <ctime>
@@ -50,7 +52,7 @@ void BoardController::_ready() {
     y_offset = ((-256.0*(float)height) / 2.0) * scale + 96.0;
 
     //load the tile object scene
-    ResourceLoader* resource_loader = ResourceLoader::get_singleton();
+    resource_loader = ResourceLoader::get_singleton();
     Ref<PackedScene> board_tile = resource_loader->load("res://Scenes/Objects/Tile.tscn");
 
     //spawn the tiles
@@ -102,27 +104,29 @@ void BoardController::_ready() {
 
 void BoardController::_process(float delta) {
 
-    switch(turn) {
-        case Turn::Player: 
-            if(is_animating) {
-                animate_token(delta);
-            } else {
-                //chosing a token
-                token->set_position(get_token_start_position(get_global_mouse_position()));
+    if(is_playing) {
+        switch(turn) {
+            case Turn::Player: 
+                if(is_animating) {
+                    animate_token(delta);
+                } else {
+                    //chosing a token
+                    token->set_position(get_token_start_position(get_global_mouse_position()));
 
-                Input* input = Input::get_singleton();
-                int index = get_token_index(get_global_mouse_position());
-                if(input->is_action_pressed("drop") && !board.is_row_full(index)) {
-                    end_y_position = y_offset + scaled_texture_size * (height - 1) - board.get_row_count(index)*scaled_texture_size;
-                    board.place_token(index, TokenType::Yellow);
-                    is_animating = true;
+                    Input* input = Input::get_singleton();
+                    int index = get_token_index(get_global_mouse_position());
+                    if(input->is_action_pressed("drop") && !board.is_row_full(index)) {
+                        end_y_position = y_offset + scaled_texture_size * (height - 1) - board.get_row_count(index)*scaled_texture_size;
+                        board.place_token(index, TokenType::Yellow);
+                        is_animating = true;
+                    }
                 }
-            }
-            break;
+                break;
 
-        case Turn::AI: 
-            animate_token(delta);
-            break;
+            case Turn::AI: 
+                animate_token(delta);
+                break;
+        }
     }
 }
 
@@ -146,27 +150,46 @@ void BoardController::change_turn() {
     switch(board.check_victory()) {
 
         //no one has won yet
-        case TokenType::Empty: 
-            if(turn == Turn::Player) {
-                turn = Turn::AI;
-                ready_ai();
+        case TokenType::Empty: {
+            
+
+            //check if the board is full before we continue.. I don't know if you can get a draw in connect four, but i'll check just in case
+            if(board.is_board_full()) {
+                //change to draw scene
+                Godot::print("It's a draw!");
+                SceneManager* scene_manager = (SceneManager*)get_tree()->get_root()->get_node("SceneManager");
+                scene_manager->switch_scene("res://Scenes/DrawScene.tscn");
+                
             } else {
-                turn = Turn::Player;
-                ready_player();
+                //else continue if the board wasn't full
+                if(turn == Turn::Player) {
+                    turn = Turn::AI;
+                    ready_ai();
+                } else {
+                    turn = Turn::Player;
+                    ready_player();
+                }
+                update_turn_text();
             }
-            update_turn_text();
             break;
+        }
 
         //the player won!
-        case TokenType::Yellow:
-
+        case TokenType::Yellow: {
+            //go to player win screen
+            SceneManager* scene_manager = (SceneManager*)get_tree()->get_root()->get_node("SceneManager");
+            scene_manager->switch_scene("res://Scenes/PlayerWinScene.tscn");
             break;
+        }
+            
 
         //the AI won!
-        case TokenType::Red:
-
+        case TokenType::Red: {
+            //go to ai win screen
+            SceneManager* scene_manager = (SceneManager*)get_tree()->get_root()->get_node("SceneManager");
+            scene_manager->switch_scene("res://Scenes/AIWinScene.tscn");
             break;
-
+        }
     }
 }
 
@@ -208,6 +231,10 @@ void BoardController::ready_ai() {
 
     //now we choose one randomly for now
     uint8_t index = rand() % width;
+    while(board.is_row_full(index)) {
+        index = rand() % width;
+    }
+
     float x_position = x_offset + (index * scaled_texture_size);
     float y_position = y_offset - scaled_texture_size - 16.0;
     token->set_position(Vector2(x_position, y_position));

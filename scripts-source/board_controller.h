@@ -6,6 +6,7 @@
 #include <Label.hpp>
 #include <NodePath.hpp>
 #include <PackedScene.hpp>
+#include <ResourceLoader.hpp>
 #include <Sprite.hpp>
 
 namespace godot {
@@ -26,6 +27,8 @@ namespace godot {
             Turn turn;
             NodePath turn_text_path;
             Label* turn_text;
+            ResourceLoader* resource_loader;
+            bool is_playing = true;
 
             float texture_size;
             float scale;
