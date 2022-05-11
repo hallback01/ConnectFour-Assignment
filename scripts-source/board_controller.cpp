@@ -1,5 +1,6 @@
 #include "board_controller.h"
 #include <ResourceLoader.hpp>
+#include <PackedScene.hpp>
 #include <Sprite.hpp>
 
 using namespace godot;
@@ -10,11 +11,13 @@ void BoardController::_register_methods() {
 
     register_property<BoardController, uint8_t>("width", &BoardController::width, 7);
     register_property<BoardController, uint8_t>("height", &BoardController::height, 6);
+    register_property<BoardController, Color>("tile_color", &BoardController::tile_color, Color());
 }
 
 void BoardController::_init() {
     width = 7;
     height = 6;
+    tile_color = Color(0.0, 0.0, 1.0);
 }
 
 void BoardController::_ready() {
@@ -28,7 +31,7 @@ void BoardController::_ready() {
     const float scale = 0.25f;
     const float scaled_texture_size = (texture_size * scale);
     const float x_offset = ((-256.0*(float)width) / 2.0) * scale;
-    const float y_offset = ((-256.0*(float)height) / 2.0) * scale + 128.0 - 32.0;
+    const float y_offset = ((-256.0*(float)height) / 2.0) * scale + 96.0;
     for(uint8_t y = 0; y < height; y++) {
         for(uint8_t x = 0; x < width; x++) {
 
@@ -37,6 +40,7 @@ void BoardController::_ready() {
             //set it's position and scale
             tile->set_position(Vector2(x*scaled_texture_size + x_offset, y*scaled_texture_size + y_offset));
             tile->set_scale(Vector2(scale, scale));
+            tile->set_modulate(tile_color);
 
             //add child to this node
             add_child(tile);

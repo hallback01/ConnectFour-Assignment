@@ -1,7 +1,9 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://Sprites/tile.png" type="Texture" id=1]
+[sub_resource type="StreamTexture" id=1]
+flags = 4
+load_path = "res://.import/tile.png-484556c5e80e89276f13d51f43be63d4.stex"
 
 [node name="Tile" type="Sprite"]
-texture = ExtResource( 1 )
+texture = SubResource( 1 )
 centered = false

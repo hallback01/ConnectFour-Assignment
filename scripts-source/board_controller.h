@@ -1,7 +1,7 @@
 #pragma once
 #include <Godot.hpp>
 #include <Node.hpp>
-#include <PackedScene.hpp>
+#include <Color.hpp>
 
 namespace godot {
 
@@ -11,6 +11,7 @@ namespace godot {
         private:
             uint8_t width;
             uint8_t height;
+            Color tile_color;
 
         public:
             static void _register_methods();

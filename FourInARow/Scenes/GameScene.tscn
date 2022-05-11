@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Scripts/BoardController.gdns" type="Script" id=1]
+[ext_resource path="res://Fonts/NotoSans.tres" type="DynamicFont" id=2]
 
 [node name="GameScene" type="Node2D"]
 
@@ -9,3 +10,23 @@ current = true
 
 [node name="BoardController" type="Node" parent="."]
 script = ExtResource( 1 )
+tile_color = Color( 0.113725, 0.231373, 0.870588, 1 )
+
+[node name="GUI" type="Control" parent="."]
+margin_left = -256.0
+margin_top = -320.0
+margin_right = 256.0
+
+[node name="GameLabel" type="Label" parent="GUI"]
+anchor_left = 0.5
+anchor_top = 0.138
+anchor_right = 0.5
+anchor_bottom = 0.138
+margin_left = -256.0
+margin_top = -44.16
+margin_right = 256.0
+margin_bottom = 48.84
+custom_fonts/font = ExtResource( 2 )
+text = "Four in a Row"
+align = 1
+valign = 1
