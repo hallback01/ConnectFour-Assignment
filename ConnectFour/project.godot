@@ -10,7 +10,7 @@ config_version=4
 
 [application]
 
-config/name="FourInARow"
+config/name="Connect Four"
 run/main_scene="res://Scenes/GameScene.tscn"
 config/icon="res://icon.png"
 
