@@ -2,6 +2,9 @@
 #include <ResourceLoader.hpp>
 #include <PackedScene.hpp>
 #include <Sprite.hpp>
+#include <cassert>
+#include <cstdlib>
+#include <ctime>
 
 using namespace godot;
 
@@ -11,7 +14,8 @@ void BoardController::_register_methods() {
 
     register_property<BoardController, uint8_t>("width", &BoardController::width, 7);
     register_property<BoardController, uint8_t>("height", &BoardController::height, 6);
-    register_property<BoardController, Color>("tile_color", &BoardController::tile_color, Color());
+    register_property<BoardController, Color>("tile_color", &BoardController::tile_color, Color(0.0, 0.0, 1.0));
+    register_property<BoardController, NodePath>("turn_text_path", &BoardController::turn_text_path, NodePath());
 }
 
 void BoardController::_init() {
@@ -46,8 +50,52 @@ void BoardController::_ready() {
             add_child(tile);
         }
     }
+
+    //gather the turn text reference from the nodepath
+    assert(!turn_text_path.is_empty());
+    turn_text = (Label*)get_node(turn_text_path);
+    assert(turn_text);
+
+    //randomize who starts
+    std::srand(std::time(nullptr));
+    int random = std::rand() % 2;
+    if(random == 0) {
+        turn = Turn::Player;
+    } else if(random == 1) {
+        turn = Turn::AI;
+    }
+
+    //set it to the correct text
+    update_turn_text();
 }
 
 void BoardController::_process(float delta) {
     
+}
+
+void BoardController::change_turn() {
+
+    //switches turn and updates the "who's turn" text in the gui
+    if(turn == Turn::Player) {
+        turn = Turn::AI;
+    } else {
+        turn = Turn::Player;
+    }
+    update_turn_text();
+}
+
+void BoardController::update_turn_text() {
+    assert(turn_text);
+
+    switch(turn) {
+        case Turn::Player:
+            turn_text->set_text("Player's turn!");
+            turn_text->add_color_override("font_color", Color(1.0, 1.0, 0.0)); //player is yellow
+            break;
+
+        case Turn::AI:
+            turn_text->set_text("AI's turn!");
+            turn_text->add_color_override("font_color", Color(1.0, 0.0, 0.0)); //ai is red
+            break;
+    }
 }
