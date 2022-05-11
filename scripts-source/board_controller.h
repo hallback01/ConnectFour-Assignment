@@ -4,6 +4,8 @@
 #include <Color.hpp>
 #include <Label.hpp>
 #include <NodePath.hpp>
+#include <PackedScene.hpp>
+#include <Sprite.hpp>
 
 namespace godot {
 
@@ -30,8 +32,22 @@ namespace godot {
             float x_offset;
             float y_offset;
 
+            //state variables
+            NodePath token_parent_path;
+            Node2D* token_parent;
+            Sprite* token;
+            bool is_animating;
+            Ref<PackedScene> token_scene;
+
             void change_turn();
             void update_turn_text();
+
+            void process_player(float delta);
+            void process_ai(float delta);
+            void ready_player();
+            void ready_ai();
+            Vector2 get_token_start_position(const Vector2 position);
+            uint8_t get_token_index(const Vector2 position);
 
         public:
             static void _register_methods();

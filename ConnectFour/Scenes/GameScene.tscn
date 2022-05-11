@@ -8,10 +8,13 @@
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
 
+[node name="Tokens" type="Node2D" parent="."]
+
 [node name="BoardController" type="Node2D" parent="."]
 script = ExtResource( 1 )
 tile_color = Color( 0.0235294, 0, 0.698039, 1 )
 turn_text_path = NodePath("../GUI/WhosTurn")
+token_parent_path = NodePath("../Tokens")
 
 [node name="GUI" type="Control" parent="."]
 margin_left = -256.0
