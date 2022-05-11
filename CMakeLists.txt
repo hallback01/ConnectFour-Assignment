@@ -8,7 +8,7 @@ add_subdirectory("godot-cpp" ${CMAKE_SOURCE_DIR}/godot-cpp/)
 
 # this project
 cmake_minimum_required(VERSION 3.18)
-project(fourinarow CXX)
+project(connectfour CXX)
 set(CMAKE_CXX_STANDARD 14)
 set(BUILD_PATH ${CMAKE_SOURCE_DIR}/ConnectFour/GDNativeLibraries/)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${BUILD_PATH}")
@@ -19,7 +19,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${BUILD_PATH}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${BUILD_PATH}")
 
 # include files
-include_directories(fourinarow 
+include_directories(connectfour 
     ${CMAKE_SOURCE_DIR}/godot-cpp/godot-headers/
     ${CMAKE_SOURCE_DIR}/godot-cpp/include/
     ${CMAKE_SOURCE_DIR}/godot-cpp/include/core/
@@ -31,7 +31,7 @@ file(GLOB_RECURSE script-source "scripts-source/*.cpp")
 file(GLOB_RECURSE script-headers "scripts-source/*.h**")
 
 # shared library
-add_library(fourinarow SHARED ${script-source} ${script-headers})
+add_library(connectfour SHARED ${script-source} ${script-headers})
 
-# link godot-cpp with fourinarow script library
-target_link_libraries(fourinarow godot-cpp)
+# link godot-cpp with connectfour script library
+target_link_libraries(connectfour godot-cpp)
