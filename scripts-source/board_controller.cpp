@@ -82,6 +82,9 @@ void BoardController::_ready() {
     turn_text = (Label*)get_node(turn_text_path);
     assert(turn_text);
 
+    //create the board
+    board = Board(width, height);
+
     //randomize who starts
     std::srand(std::time(nullptr));
     int random = std::rand() % 2;
@@ -108,9 +111,10 @@ void BoardController::_process(float delta) {
                 token->set_position(get_token_start_position(get_global_mouse_position()));
 
                 Input* input = Input::get_singleton();
-                if(input->is_action_pressed("drop")) {
-                    int index = get_token_index(get_global_mouse_position());
-                    end_y_position = y_offset + scaled_texture_size * (height - 1);
+                int index = get_token_index(get_global_mouse_position());
+                if(input->is_action_pressed("drop") && !board.is_row_full(index)) {
+                    end_y_position = y_offset + scaled_texture_size * (height - 1) - board.get_row_count(index)*scaled_texture_size;
+                    board.place_token(index, TokenType::Yellow);
                     is_animating = true;
                 }
             }
@@ -138,15 +142,32 @@ void BoardController::_draw() {
 
 //switches turn and updates the "who's turn" text in the gui
 void BoardController::change_turn() {
-    
-    if(turn == Turn::Player) {
-        turn = Turn::AI;
-        ready_ai();
-    } else {
-        turn = Turn::Player;
-        ready_player();
+
+    switch(board.check_victory()) {
+
+        //no one has won yet
+        case TokenType::Empty: 
+            if(turn == Turn::Player) {
+                turn = Turn::AI;
+                ready_ai();
+            } else {
+                turn = Turn::Player;
+                ready_player();
+            }
+            update_turn_text();
+            break;
+
+        //the player won!
+        case TokenType::Yellow:
+
+            break;
+
+        //the AI won!
+        case TokenType::Red:
+
+            break;
+
     }
-    update_turn_text();
 }
 
 //updates the turn text depending on the built in "turn" variable
@@ -167,13 +188,12 @@ void BoardController::update_turn_text() {
     }
 }
 
-/// ---- ready functions
 void BoardController::ready_player() {
     gravitation = 0.0f;
 
     token = (Sprite*)token_scene->instance();
     token->set_modulate(Color(1.0, 1.0, 0.0));
-    token->set_position(Vector2(10000.0, 10000.0)); //place it outside the screen for now
+    token->set_position(Vector2(10000.0, -10000.0)); //place it outside the screen for now
     token_parent->add_child(token);
 
 }
@@ -183,11 +203,18 @@ void BoardController::ready_ai() {
 
     token = (Sprite*)token_scene->instance();
     token->set_modulate(Color(1.0, 0.0, 0.0));
-    token->set_position(Vector2(10000.0, 10000.0)); //place it outside the screen for now
+    token->set_position(Vector2(10000.0, -10000.0)); //place it outside the screen for now
     token_parent->add_child(token);
+
+    //now we choose one randomly for now
+    uint8_t index = rand() % width;
+    float x_position = x_offset + (index * scaled_texture_size);
+    float y_position = y_offset - scaled_texture_size - 16.0;
+    token->set_position(Vector2(x_position, y_position));
+    end_y_position = y_offset + scaled_texture_size * (height - 1) - board.get_row_count(index)*scaled_texture_size;
+    board.place_token(index, TokenType::Red);
 }
 
-// ---- process functions
 Vector2 BoardController::get_token_start_position(const Vector2 position) {
     float start_position = x_offset;
     float y_position = y_offset - scaled_texture_size - 16.0;

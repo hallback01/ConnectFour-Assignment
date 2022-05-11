@@ -1,4 +1,5 @@
 #pragma once
+#include "board.h"
 #include <Godot.hpp>
 #include <Node2D.hpp>
 #include <Color.hpp>
@@ -41,6 +42,7 @@ namespace godot {
             float gravitation_force;
             float gravitation;
             float end_y_position;
+            Board board;
 
             void change_turn();
             void update_turn_text();
