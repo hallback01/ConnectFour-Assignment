@@ -38,6 +38,9 @@ namespace godot {
             Sprite* token;
             bool is_animating;
             Ref<PackedScene> token_scene;
+            float gravitation_force;
+            float gravitation;
+            float end_y_position;
 
             void change_turn();
             void update_turn_text();

@@ -15,6 +15,7 @@ void BoardController::_register_methods() {
 
     register_property<BoardController, uint8_t>("width", &BoardController::width, 7);
     register_property<BoardController, uint8_t>("height", &BoardController::height, 6);
+    register_property<BoardController, float>("gravitation_force", &BoardController::gravitation_force, 9.82f);
     register_property<BoardController, Color>("tile_color", &BoardController::tile_color, Color(0.0, 0.0, 1.0));
     register_property<BoardController, NodePath>("turn_text_path", &BoardController::turn_text_path, NodePath());
     register_property<BoardController, NodePath>("token_parent_path", &BoardController::token_parent_path, NodePath());
@@ -35,6 +36,8 @@ void BoardController::_init() {
     height = 6;
     tile_color = Color(0.0, 0.0, 1.0);
     is_animating = false;
+    gravitation_force = 9.82f;
+    gravitation = 0.0f;
 }
 
 void BoardController::_ready() {
@@ -150,6 +153,7 @@ void BoardController::update_turn_text() {
 /// ---- ready functions
 void BoardController::ready_player() {
     Godot::print("Player's turn.");
+    gravitation = 0.0f;
 
     token = (Sprite*)token_scene->instance();
     token->set_modulate(Color(1.0, 1.0, 0.0));
@@ -160,6 +164,7 @@ void BoardController::ready_player() {
 
 void BoardController::ready_ai() {
     Godot::print("AI's turn.");
+    gravitation = 0.0f;
 
     token = (Sprite*)token_scene->instance();
     token->set_modulate(Color(1.0, 0.0, 0.0));
@@ -188,6 +193,18 @@ void BoardController::process_player(float delta) {
     //droping the token
     if(is_animating) {
 
+        gravitation += gravitation_force * delta;
+
+        Vector2 token_position = token->get_position();
+        token_position.y += gravitation * delta;
+        token_position.y = clamp(token_position.y, token_position.y, end_y_position);
+        token->set_position(token_position);
+
+        if(token_position.y >= end_y_position) {
+            is_animating = false;
+            change_turn();
+        }
+
     } else {
         //chosing a token
         token->set_position(get_token_start_position(get_global_mouse_position()));
@@ -195,6 +212,7 @@ void BoardController::process_player(float delta) {
         Input* input = Input::get_singleton();
         if(input->is_action_pressed("drop")) {
             int index = get_token_index(get_global_mouse_position());
+            end_y_position = y_offset + scaled_texture_size * (height - 1);
             Godot::print("Dropping");
             is_animating = true;
         }
