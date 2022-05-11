@@ -1,4 +1,4 @@
-# FourInARow-Assignment
+# ConnectFour-Assignment
 An artificial intelligence assignment in school. I chose to recreate the classical game "connect four", using Godot 3.4.4 with c++(GDNative) as the scripting langauge.
 
 # Build requirements
