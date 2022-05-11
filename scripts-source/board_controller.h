@@ -45,12 +45,11 @@ namespace godot {
             void change_turn();
             void update_turn_text();
 
-            void process_player(float delta);
-            void process_ai(float delta);
             void ready_player();
             void ready_ai();
             Vector2 get_token_start_position(const Vector2 position);
             uint8_t get_token_index(const Vector2 position);
+            void animate_token(float delta);
 
         public:
             static void _register_methods();

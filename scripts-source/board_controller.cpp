@@ -100,8 +100,25 @@ void BoardController::_ready() {
 void BoardController::_process(float delta) {
 
     switch(turn) {
-        case Turn::Player: process_player(delta); break;
-        case Turn::AI: process_ai(delta); break;
+        case Turn::Player: 
+            if(is_animating) {
+                animate_token(delta);
+            } else {
+                //chosing a token
+                token->set_position(get_token_start_position(get_global_mouse_position()));
+
+                Input* input = Input::get_singleton();
+                if(input->is_action_pressed("drop")) {
+                    int index = get_token_index(get_global_mouse_position());
+                    end_y_position = y_offset + scaled_texture_size * (height - 1);
+                    is_animating = true;
+                }
+            }
+            break;
+
+        case Turn::AI: 
+            animate_token(delta);
+            break;
     }
 }
 
@@ -152,7 +169,6 @@ void BoardController::update_turn_text() {
 
 /// ---- ready functions
 void BoardController::ready_player() {
-    Godot::print("Player's turn.");
     gravitation = 0.0f;
 
     token = (Sprite*)token_scene->instance();
@@ -163,7 +179,6 @@ void BoardController::ready_player() {
 }
 
 void BoardController::ready_ai() {
-    Godot::print("AI's turn.");
     gravitation = 0.0f;
 
     token = (Sprite*)token_scene->instance();
@@ -188,39 +203,14 @@ uint8_t BoardController::get_token_index(const Vector2 position) {
     return percentage * (width-1);
 }
 
-void BoardController::process_player(float delta) {
-
-    //droping the token
-    if(is_animating) {
-
-        gravitation += gravitation_force * delta;
-
-        Vector2 token_position = token->get_position();
-        token_position.y += gravitation * delta;
-        token_position.y = clamp(token_position.y, token_position.y, end_y_position);
-        token->set_position(token_position);
-
-        if(token_position.y >= end_y_position) {
-            is_animating = false;
-            change_turn();
-        }
-
-    } else {
-        //chosing a token
-        token->set_position(get_token_start_position(get_global_mouse_position()));
-
-        Input* input = Input::get_singleton();
-        if(input->is_action_pressed("drop")) {
-            int index = get_token_index(get_global_mouse_position());
-            end_y_position = y_offset + scaled_texture_size * (height - 1);
-            Godot::print("Dropping");
-            is_animating = true;
-        }
+void BoardController::animate_token(float delta) {
+    gravitation += gravitation_force * delta;
+    Vector2 token_position = token->get_position();
+    token_position.y += gravitation * delta;
+    token_position.y = clamp(token_position.y, token_position.y, end_y_position);
+    token->set_position(token_position);
+    if(token_position.y >= end_y_position) {
+        is_animating = false;
+        change_turn();
     }
-}
-
-void BoardController::process_ai(float delta) {
-
-    //dropping the token
-
 }
