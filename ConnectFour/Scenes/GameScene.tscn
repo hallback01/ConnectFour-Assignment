@@ -8,7 +8,7 @@
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
 
-[node name="BoardController" type="Node" parent="."]
+[node name="BoardController" type="Node2D" parent="."]
 script = ExtResource( 1 )
 tile_color = Color( 0.113725, 0.113725, 0.690196, 1 )
 turn_text_path = NodePath("../GUI/WhosTurn")

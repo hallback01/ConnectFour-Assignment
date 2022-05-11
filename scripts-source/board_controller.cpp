@@ -2,6 +2,7 @@
 #include <ResourceLoader.hpp>
 #include <PackedScene.hpp>
 #include <Sprite.hpp>
+#include <Color.hpp>
 #include <cassert>
 #include <cstdlib>
 #include <ctime>
@@ -11,6 +12,7 @@ using namespace godot;
 void BoardController::_register_methods() {
     register_method("_ready", &BoardController::_ready);
     register_method("_process", &BoardController::_process);
+    register_method("_draw", &BoardController::_draw);
 
     register_property<BoardController, uint8_t>("width", &BoardController::width, 7);
     register_property<BoardController, uint8_t>("height", &BoardController::height, 6);
@@ -22,6 +24,13 @@ void BoardController::_init() {
     width = 7;
     height = 6;
     tile_color = Color(0.0, 0.0, 1.0);
+
+    //initialize other constants
+    texture_size = 256;
+    scale = 0.25f;
+    scaled_texture_size = (texture_size * scale);
+    x_offset = ((-256.0*(float)width) / 2.0) * scale;
+    y_offset = ((-256.0*(float)height) / 2.0) * scale + 96.0;
 }
 
 void BoardController::_ready() {
@@ -31,11 +40,6 @@ void BoardController::_ready() {
     Ref<PackedScene> board_tile = resource_loader->load("res://Scenes/Objects/Tile.tscn");
 
     //spawn the tiles
-    const float texture_size = 256;
-    const float scale = 0.25f;
-    const float scaled_texture_size = (texture_size * scale);
-    const float x_offset = ((-256.0*(float)width) / 2.0) * scale;
-    const float y_offset = ((-256.0*(float)height) / 2.0) * scale + 96.0;
     for(uint8_t y = 0; y < height; y++) {
         for(uint8_t x = 0; x < width; x++) {
 
@@ -71,6 +75,20 @@ void BoardController::_ready() {
 
 void BoardController::_process(float delta) {
     
+}
+
+void BoardController::_draw() {
+
+    //draw black border around the board
+    Vector2 top_left = Vector2(x_offset, y_offset - 1);
+    Vector2 top_right = Vector2(x_offset + scaled_texture_size * width + 1, y_offset - 1);
+    Vector2 bot_left = Vector2(x_offset, y_offset + scaled_texture_size * height + 1);
+    Vector2 bot_right = Vector2(x_offset + scaled_texture_size * width + 1, y_offset + scaled_texture_size * height);
+
+    draw_line(top_left, top_right, Color(0.0, 0.0, 0.0));
+    draw_line(bot_left, bot_right, Color(0.0, 0.0, 0.0));
+    draw_line(top_left, bot_left, Color(0.0, 0.0, 0.0));
+    draw_line(top_right, bot_right, Color(0.0, 0.0, 0.0));
 }
 
 void BoardController::change_turn() {

@@ -1,3 +1,5 @@
+//why this file is here:
+//https://docs.godotengine.org/en/stable/tutorials/scripting/gdnative/gdnative_cpp_example.html
 #include <Godot.hpp>
 #include "board_controller.h"
 
