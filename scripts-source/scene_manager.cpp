@@ -8,10 +8,6 @@ void SceneManager::_register_methods() {
     register_method("_ready", &SceneManager::_ready);
 }
 
-void SceneManager::_init() {
-
-}
-
 void SceneManager::_ready() {
     //load the game scene first 
     ResourceLoader* resource_loader = ResourceLoader::get_singleton();

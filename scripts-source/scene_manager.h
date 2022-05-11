@@ -10,7 +10,7 @@ namespace godot {
         public:
             static void _register_methods();
 
-            void _init();
+            void _init() {}
             void _ready();
             void switch_scene(const String scene);
     };
