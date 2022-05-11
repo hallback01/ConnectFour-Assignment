@@ -84,6 +84,8 @@ void BoardController::change_turn() {
     update_turn_text();
 }
 
+//updates the turn text depending on the built in "turn" variable
+//turn_text cannot be null
 void BoardController::update_turn_text() {
     assert(turn_text);
 

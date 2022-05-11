@@ -124,7 +124,7 @@ margin_top = -44.16
 margin_right = 256.0
 margin_bottom = 48.84
 custom_fonts/font = ExtResource( 2 )
-text = "Four in a Row"
+text = "Connect Four"
 align = 1
 valign = 1
 

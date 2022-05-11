@@ -1,5 +1,5 @@
 # FourInARow-Assignment
-An artificial intelligence assignment in school. I chose to recreate the game "four in a row", using Godot 3.4.4 with c++(GDNative) as the scripting langauge.
+An artificial intelligence assignment in school. I chose to recreate the classical game "connect four", using Godot 3.4.4 with c++(GDNative) as the scripting langauge.
 
 # Build requirements
 Python 3.4 or higher
@@ -19,14 +19,14 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
 
 # File Structure
-The Godot project is located in the folder "FourInARow".
+The Godot project is located in the folder "ConnectFour".
 
 The Scripts are located in the folder "scripts-source".
 
 # Repository cloning
 If you wish to clone this. Do it recursively.
 
-git clone https://github.com/hallback01/FourInARow-Assignment.git --recursive
+git clone https://github.com/hallback01/ConnectFour-Assignment.git --recursive
 
 # Attribution
 Noto Sans Font https://fonts.google.com/noto/specimen/Noto+Sans
