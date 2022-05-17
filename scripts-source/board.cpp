@@ -18,7 +18,7 @@ Board::Board(uint8_t a_width, uint8_t a_height) {
 }
 
 //checks if a row is full (x value), returns true if it's full
-bool Board::is_row_full(uint8_t index) {
+bool Board::is_column_full(uint8_t index) {
     size_t count = tokens[index].size();
     return count == height;
 }
@@ -28,7 +28,7 @@ bool Board::is_board_full() {
 
     bool is_full = true;
     for(uint8_t x = 0; x < width; x++) {
-        if(!is_row_full(x)) {
+        if(!is_column_full(x)) {
             is_full = false;
             break;
         }

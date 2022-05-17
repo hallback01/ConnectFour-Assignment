@@ -118,7 +118,7 @@ void BoardController::_process(float delta) {
 
                     Input* input = Input::get_singleton();
                     int index = get_token_index(get_global_mouse_position());
-                    if(input->is_action_pressed("drop") && !board.is_row_full(index)) {
+                    if(input->is_action_pressed("drop") && !board.is_column_full(index)) {
                         end_y_position = y_offset + scaled_texture_size * (height - 1) - board.get_row_count(index)*scaled_texture_size;
                         board.place_token(index, TokenType::Yellow);
                         is_animating = true;

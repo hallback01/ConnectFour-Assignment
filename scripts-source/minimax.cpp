@@ -19,7 +19,7 @@ uint8_t MiniMax::get_optimal_move() {
 
     //now we choose one randomly for now
     uint8_t index = rand() % width;
-    while(board.is_row_full(index)) {
+    while(board.is_column_full(index)) {
         index = rand() % width;
     }
 
@@ -40,7 +40,7 @@ MiniMax::ValidMoves MiniMax::get_valid_moves() {
     valid_moves.amount = 0;
 
     for(uint8_t x = 0; x < width; x++) {
-        if(!board.is_row_full(x)) {
+        if(!board.is_column_full(x)) {
             valid_moves.positions[valid_moves.amount] = x;
             valid_moves.amount++;
         }
