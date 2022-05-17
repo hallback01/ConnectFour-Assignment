@@ -35,7 +35,7 @@ namespace godot {
             std::unordered_map<uint16_t, Sprite*> token_references;
             VictoryTokenCoordinates vct;
             TokenType victor;
-            float win_animation_time = 10.0f;
+            float win_animation_time = 4.0f;
             float timer = 0.0f;
 
             float texture_size;
