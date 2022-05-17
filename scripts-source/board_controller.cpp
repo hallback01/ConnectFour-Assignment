@@ -1,5 +1,6 @@
 #include "board_controller.h"
 #include "scene_manager.h"
+#include "minimax.h"
 #include <Color.hpp>
 #include <SceneTree.hpp>
 #include <Input.hpp>
@@ -17,6 +18,7 @@ void BoardController::_register_methods() {
 
     register_property<BoardController, uint8_t>("width", &BoardController::width, 7);
     register_property<BoardController, uint8_t>("height", &BoardController::height, 6);
+    register_property<BoardController, uint32_t>("minimax_depth", &BoardController::minimax_depth, 2);
     register_property<BoardController, float>("gravitation_force", &BoardController::gravitation_force, 9.82f);
     register_property<BoardController, Color>("tile_color", &BoardController::tile_color, Color(0.0, 0.0, 1.0));
     register_property<BoardController, NodePath>("turn_text_path", &BoardController::turn_text_path, NodePath());
@@ -36,6 +38,7 @@ float clamp(float value, float min, float max) {
 void BoardController::_init() {
     width = 7;
     height = 6;
+    minimax_depth = 2;
     tile_color = Color(0.0, 0.0, 1.0);
     is_animating = false;
     gravitation_force = 9.82f;
@@ -229,12 +232,16 @@ void BoardController::ready_ai() {
     token->set_position(Vector2(10000.0, -10000.0)); //place it outside the screen for now
     token_parent->add_child(token);
 
-    //now we choose one randomly for now
-    uint8_t index = rand() % width;
-    while(board.is_row_full(index)) {
-        index = rand() % width;
-    }
+    //start minimax
+    MiniMax minimax(board, width, height);
 
+    //run minmax at specified depth
+    minimax.run(2);
+
+    //get the best move
+    uint8_t index = minimax.get_valid_move();
+
+    //place it
     float x_position = x_offset + (index * scaled_texture_size);
     float y_position = y_offset - scaled_texture_size - 16.0;
     token->set_position(Vector2(x_position, y_position));

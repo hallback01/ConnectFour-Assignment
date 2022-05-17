@@ -23,6 +23,7 @@ namespace godot {
 
             uint8_t width;
             uint8_t height;
+            uint32_t minimax_depth;
             Color tile_color;
             Turn turn;
             NodePath turn_text_path;
