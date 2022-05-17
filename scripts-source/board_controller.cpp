@@ -8,6 +8,8 @@
 #include <cassert>
 #include <cstdlib>
 #include <ctime>
+#include <string>
+#include <math.h>
 
 using namespace godot;
 
@@ -46,6 +48,9 @@ void BoardController::_init() {
 }
 
 void BoardController::_ready() {
+
+    //initialize time
+    start = std::chrono::high_resolution_clock::now();
 
     //initialize other constants
     texture_size = 256;
@@ -119,8 +124,9 @@ void BoardController::_process(float delta) {
                     Input* input = Input::get_singleton();
                     int index = get_token_index(get_global_mouse_position());
                     if(input->is_action_pressed("drop") && !board.is_column_full(index)) {
-                        end_y_position = y_offset + scaled_texture_size * (height - 1) - board.get_row_count(index)*scaled_texture_size;
+                        end_y_position = y_offset + scaled_texture_size * (height - 1) - board.get_column_count(index)*scaled_texture_size;
                         board.place_token(index, TokenType::Yellow);
+                        token_references.insert({combine_coordinates(index, board.get_column_count(index)-1), token});
                         is_animating = true;
                     }
                 }
@@ -129,6 +135,36 @@ void BoardController::_process(float delta) {
             case Turn::AI: 
                 animate_token(delta);
                 break;
+        }
+    } else {
+        if(timer <= win_animation_time) {
+            timer += delta;
+            //animate the token's that won the game
+            //get references
+            Sprite* token_1 = token_references[combine_coordinates(vct.x1, vct.y1)];
+            Sprite* token_2 = token_references[combine_coordinates(vct.x2, vct.y2)];
+            Sprite* token_3 = token_references[combine_coordinates(vct.x3, vct.y3)];
+            Sprite* token_4 = token_references[combine_coordinates(vct.x4, vct.y4)];
+
+            //color
+            Color color(1.0, 0.0, 0.0); if(victor == TokenType::Yellow) {color = Color(1.0, 1.0, 0.0);}
+            Color lerped_color = color.linear_interpolate(Color(0.0, 0.0, 0.0), abs(sin(5.0f * timer)));
+
+            //change color
+            token_1->set_modulate(lerped_color);
+            token_2->set_modulate(lerped_color);
+            token_3->set_modulate(lerped_color);
+            token_4->set_modulate(lerped_color);
+
+        } else {
+
+            //when done, go to the win/lose screen
+            SceneManager* scene_manager = (SceneManager*)get_tree()->get_root()->get_node("SceneManager");
+            if(victor == TokenType::Red) {
+                scene_manager->switch_scene("res://Scenes/AIWinScene.tscn");
+            } else if(victor == TokenType::Yellow) {
+                scene_manager->switch_scene("res://Scenes/PlayerWinScene.tscn");
+            }
         }
     }
 }
@@ -150,11 +186,10 @@ void BoardController::_draw() {
 //switches turn and updates the "who's turn" text in the gui
 void BoardController::change_turn() {
 
-    switch(board.check_victory()) {
+    switch(board.check_victory(vct)) {
 
         //no one has won yet
         case TokenType::Empty: {
-            
 
             //check if the board is full before we continue.. I don't know if you can get a draw in connect four, but i'll check just in case
             if(board.is_board_full()) {
@@ -180,17 +215,18 @@ void BoardController::change_turn() {
         //the player won!
         case TokenType::Yellow: {
             //go to player win screen
-            SceneManager* scene_manager = (SceneManager*)get_tree()->get_root()->get_node("SceneManager");
-            scene_manager->switch_scene("res://Scenes/PlayerWinScene.tscn");
+            victor = TokenType::Yellow;
+            is_playing = false;
+            timer = 0.0f;
             break;
         }
-            
 
         //the AI won!
         case TokenType::Red: {
             //go to ai win screen
-            SceneManager* scene_manager = (SceneManager*)get_tree()->get_root()->get_node("SceneManager");
-            scene_manager->switch_scene("res://Scenes/AIWinScene.tscn");
+            victor = TokenType::Red;
+            is_playing = false;
+            timer = 0.0f;
             break;
         }
     }
@@ -245,8 +281,9 @@ void BoardController::ready_ai() {
     float x_position = x_offset + (index * scaled_texture_size);
     float y_position = y_offset - scaled_texture_size - 16.0;
     token->set_position(Vector2(x_position, y_position));
-    end_y_position = y_offset + scaled_texture_size * (height - 1) - board.get_row_count(index)*scaled_texture_size;
+    end_y_position = y_offset + scaled_texture_size * (height - 1) - board.get_column_count(index)*scaled_texture_size;
     board.place_token(index, TokenType::Red);
+    token_references.insert({combine_coordinates(index, board.get_column_count(index)-1), token});
 }
 
 Vector2 BoardController::get_token_start_position(const Vector2 position) {
@@ -274,4 +311,15 @@ void BoardController::animate_token(float delta) {
         is_animating = false;
         change_turn();
     }
+}
+
+//this function converts two coordinates into one integer.
+//it is needed for the unordered_map's keys. I could probably have used pairs, but oh well, bit manipulation is cooler lol
+uint16_t BoardController::combine_coordinates(uint8_t x, uint8_t y) {
+    return x | (y << 8);
+}
+
+//returns the current time since _ready function got called
+float BoardController::get_time() {
+    return std::chrono::duration_cast<std::chrono::seconds>( std::chrono::high_resolution_clock::now() - start ).count();
 }
