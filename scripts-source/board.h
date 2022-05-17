@@ -13,6 +13,8 @@ class Board {
         std::vector<std::vector<TokenType>> tokens; //x, y
         uint8_t height;
         uint8_t width;
+        TokenType are_four_coordinates_same(TokenType a, TokenType b, TokenType c, TokenType d);
+        void print_board();
 
     public:
         Board();
