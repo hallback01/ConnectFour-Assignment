@@ -65,10 +65,6 @@ namespace godot {
             uint8_t get_token_index(const Vector2 position);
             void animate_token(float delta);
 
-            //time
-            float get_time();
-            std::chrono::high_resolution_clock::time_point start;
-
         public:
             static void _register_methods();
 

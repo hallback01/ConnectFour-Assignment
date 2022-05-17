@@ -49,9 +49,6 @@ void BoardController::_init() {
 
 void BoardController::_ready() {
 
-    //initialize time
-    start = std::chrono::high_resolution_clock::now();
-
     //initialize other constants
     texture_size = 256;
     scale = 0.25f;
@@ -317,9 +314,4 @@ void BoardController::animate_token(float delta) {
 //it is needed for the unordered_map's keys. I could probably have used pairs, but oh well, bit manipulation is cooler lol
 uint16_t BoardController::combine_coordinates(uint8_t x, uint8_t y) {
     return x | (y << 8);
-}
-
-//returns the current time since _ready function got called
-float BoardController::get_time() {
-    return std::chrono::duration_cast<std::chrono::seconds>( std::chrono::high_resolution_clock::now() - start ).count();
 }
