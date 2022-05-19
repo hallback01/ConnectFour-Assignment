@@ -16,6 +16,11 @@ class MiniMax {
 
         ValidMoves get_valid_moves();
 
+        //needed by the heuristic to get a score aproximation within a board state
+        uint32_t get_dangerous_twos(TokenType player, Board& a_board);
+        uint32_t get_dangerous_threes(TokenType player, Board& a_board);
+        uint32_t get_fours(TokenType player, Board& a_board);
+
     public:
         MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height);
         void run(uint32_t depth);
