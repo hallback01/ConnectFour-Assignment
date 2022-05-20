@@ -125,13 +125,20 @@ MiniMax::TerminalNodeState MiniMax::is_terminal_node(Board& a_board) {
 int32_t MiniMax::board_score(Board& a_board) {
     DangerousConfigurations player_configs = get_dangerous_configurations(a_board, TokenType::Yellow);
     DangerousConfigurations ai_configs = get_dangerous_configurations(a_board, TokenType::Red);
-    int32_t score = (3 * ai_configs.threes + ai_configs.twos) - (3 * player_configs.threes + player_configs.twos);
-    return score;
+
+    if(player_configs.fours) {
+        return MIN_SCORE;
+    } else if(ai_configs.fours) {
+        return MAX_SCORE;
+    } else {
+        int32_t score = (3 * ai_configs.threes + ai_configs.twos) - (3 * player_configs.threes + player_configs.twos);
+        return score;
+    }
 }
 
 MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_board, TokenType who) {
 
-    DangerousConfigurations dangerous_configs = {0, 0};
+    DangerousConfigurations dangerous_configs = {0, 0, 0};
 
     //horizontal
     for(size_t j = 0; j < height-3; j++) {
@@ -140,6 +147,7 @@ MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_
             TokenType b = a_board.check_coordinate(i, j+1);
             TokenType c = a_board.check_coordinate(i, j+2);
             TokenType d = a_board.check_coordinate(i, j+3);
+            dangerous_configs.fours += get_fours(a, b, c, d, who); if(dangerous_configs.fours != 0) {return dangerous_configs;}
             dangerous_configs.threes += get_threes(a, b, c, d, who);
             dangerous_configs.twos += get_twos(a, b, c, d, who);
         }
@@ -152,6 +160,7 @@ MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_
             TokenType b = a_board.check_coordinate(i+1, j);
             TokenType c = a_board.check_coordinate(i+2, j);
             TokenType d = a_board.check_coordinate(i+3, j);
+            dangerous_configs.fours += get_fours(a, b, c, d, who); if(dangerous_configs.fours != 0) {return dangerous_configs;}
             dangerous_configs.threes += get_threes(a, b, c, d, who);
             dangerous_configs.twos += get_twos(a, b, c, d, who);
         }
@@ -164,6 +173,7 @@ MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_
             TokenType b = a_board.check_coordinate(i-1, j+1);
             TokenType c = a_board.check_coordinate(i-2, j+2);
             TokenType d = a_board.check_coordinate(i-3, j+3);
+            dangerous_configs.fours += get_fours(a, b, c, d, who); if(dangerous_configs.fours != 0) {return dangerous_configs;}
             dangerous_configs.threes += get_threes(a, b, c, d, who);
             dangerous_configs.twos += get_twos(a, b, c, d, who);
         }
@@ -176,12 +186,26 @@ MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_
             TokenType b = a_board.check_coordinate(i-1, j-1);
             TokenType c = a_board.check_coordinate(i-2, j-2);
             TokenType d = a_board.check_coordinate(i-3, j-3);
+            dangerous_configs.fours += get_fours(a, b, c, d, who); if(dangerous_configs.fours != 0) {return dangerous_configs;}
             dangerous_configs.threes += get_threes(a, b, c, d, who);
             dangerous_configs.twos += get_twos(a, b, c, d, who);
         }
     }
 
     return dangerous_configs;
+}
+
+int32_t MiniMax::get_fours(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who) {
+    int32_t fours = 0;
+    if(a == who) {fours++;}
+    if(b == who) {fours++;}
+    if(c == who) {fours++;}
+    if(d == who) {fours++;}
+    if(fours == 4) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 int32_t MiniMax::get_threes(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who) {
