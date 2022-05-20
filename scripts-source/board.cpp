@@ -76,7 +76,7 @@ TokenType Board::are_four_coordinates_same(TokenType a, TokenType b, TokenType c
 //returns TokenType::Empty if no one has won.
 //returns TokenType::Red if the AI has won.
 //returns TokenType::Yellow if the player has won.
-TokenType Board::check_victory(VictoryTokenCoordinates& vtc) {
+TokenType Board::check_victory(VictoryTokenCoordinates* vtc) {
 
     //horizontal
     for(size_t j = 0; j < height-3; j++) {
@@ -91,10 +91,12 @@ TokenType Board::check_victory(VictoryTokenCoordinates& vtc) {
                 print_board();
 
                 //fill the victory token coordinate struct
-                vtc.x1 = i; vtc.y1 = j;
-                vtc.x2 = i; vtc.y2 = j+1;
-                vtc.x3 = i; vtc.y3 = j+2;
-                vtc.x4 = i; vtc.y4 = j+3;
+                if(vtc) {
+                    vtc->x1 = i; vtc->y1 = j;
+                    vtc->x2 = i; vtc->y2 = j+1;
+                    vtc->x3 = i; vtc->y3 = j+2;
+                    vtc->x4 = i; vtc->y4 = j+3;
+                }
 
                 return check;
             }
@@ -114,10 +116,12 @@ TokenType Board::check_victory(VictoryTokenCoordinates& vtc) {
                 print_board();
 
                 //fill the victory token coordinate struct
-                vtc.x1 = i; vtc.y1 = j;
-                vtc.x2 = i+1; vtc.y2 = j;
-                vtc.x3 = i+2; vtc.y3 = j;
-                vtc.x4 = i+3; vtc.y4 = j;
+                if(vtc) {
+                    vtc->x1 = i; vtc->y1 = j;
+                    vtc->x2 = i+1; vtc->y2 = j;
+                    vtc->x3 = i+2; vtc->y3 = j;
+                    vtc->x4 = i+3; vtc->y4 = j;
+                }
 
                 return check;
             }
@@ -137,10 +141,12 @@ TokenType Board::check_victory(VictoryTokenCoordinates& vtc) {
                 print_board();
 
                 //fill the victory token coordinate struct
-                vtc.x1 = i; vtc.y1 = j;
-                vtc.x2 = i-1; vtc.y2 = j+1;
-                vtc.x3 = i-2; vtc.y3 = j+2;
-                vtc.x4 = i-3; vtc.y4 = j+3;
+                if(vtc) {
+                    vtc->x1 = i; vtc->y1 = j;
+                    vtc->x2 = i-1; vtc->y2 = j+1;
+                    vtc->x3 = i-2; vtc->y3 = j+2;
+                    vtc->x4 = i-3; vtc->y4 = j+3;   
+                }
 
                 return check;
             }
@@ -160,11 +166,13 @@ TokenType Board::check_victory(VictoryTokenCoordinates& vtc) {
                 print_board();
 
                 //fill the victory token coordinate struct
-                vtc.x1 = i; vtc.y1 = j;
-                vtc.x2 = i-1; vtc.y2 = j-1;
-                vtc.x3 = i-2; vtc.y3 = j-2;
-                vtc.x4 = i-3; vtc.y4 = j-3;
-
+                if(vtc) {
+                    vtc->x1 = i; vtc->y1 = j;
+                    vtc->x2 = i-1; vtc->y2 = j-1;
+                    vtc->x3 = i-2; vtc->y3 = j-2;
+                    vtc->x4 = i-3; vtc->y4 = j-3;
+                }
+                
                 return check;
             }
         }

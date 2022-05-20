@@ -35,5 +35,5 @@ class Board {
         uint8_t get_column_count(uint8_t index);
         void place_token(uint8_t index, TokenType token_type);
         TokenType check_coordinate(uint8_t x, uint8_t y);
-        TokenType check_victory(VictoryTokenCoordinates& vtc);
+        TokenType check_victory(VictoryTokenCoordinates* vtc);
 };

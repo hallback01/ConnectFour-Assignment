@@ -183,7 +183,7 @@ void BoardController::_draw() {
 //switches turn and updates the "who's turn" text in the gui
 void BoardController::change_turn() {
 
-    switch(board.check_victory(vct)) {
+    switch(board.check_victory(&vct)) {
 
         //no one has won yet
         case TokenType::Empty: {
