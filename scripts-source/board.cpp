@@ -130,7 +130,7 @@ TokenType Board::check_victory(VictoryTokenCoordinates* vtc) {
 
     //ascending diagonal
     for(size_t i = 3; i < width; i++) {
-        for(size_t j = 0; i < height-3; j++) {
+        for(size_t j = 0; j < height-3; j++) {
             TokenType a = check_coordinate(i, j);
             TokenType b = check_coordinate(i-1, j+1);
             TokenType c = check_coordinate(i-2, j+2);

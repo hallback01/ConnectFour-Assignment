@@ -1,5 +1,6 @@
 #include "minimax.h"
 #include "board.h"
+#include <Godot.hpp>
 
 MiniMax::MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height) {
     board = a_board;
@@ -11,7 +12,7 @@ MiniMax::MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height) {
 //runs minimax and tries to get the most optimal column which it then returns
 uint8_t MiniMax::get_optimal_move(uint32_t depth) {
     uint8_t column = 255;
-    int32_t score = minimax(board, depth, true, &column);
+    int32_t score = minimax(board, depth, false, &column); //it should not be maximizing in this first time, since the "next" player who drops is the player
     return column;
 }
 
@@ -125,20 +126,13 @@ MiniMax::TerminalNodeState MiniMax::is_terminal_node(Board& a_board) {
 int32_t MiniMax::board_score(Board& a_board) {
     DangerousConfigurations player_configs = get_dangerous_configurations(a_board, TokenType::Yellow);
     DangerousConfigurations ai_configs = get_dangerous_configurations(a_board, TokenType::Red);
-
-    if(player_configs.fours) {
-        return MIN_SCORE;
-    } else if(ai_configs.fours) {
-        return MAX_SCORE;
-    } else {
-        int32_t score = (3 * ai_configs.threes + ai_configs.twos) - (3 * player_configs.threes + player_configs.twos);
-        return score;
-    }
+    int32_t score = (3 * ai_configs.threes + ai_configs.twos) - (3 * player_configs.threes + player_configs.twos);
+    return score;
 }
 
 MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_board, TokenType who) {
 
-    DangerousConfigurations dangerous_configs = {0, 0, 0};
+    DangerousConfigurations dangerous_configs = {0, 0};
 
     //horizontal
     for(size_t j = 0; j < height-3; j++) {
@@ -147,7 +141,6 @@ MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_
             TokenType b = a_board.check_coordinate(i, j+1);
             TokenType c = a_board.check_coordinate(i, j+2);
             TokenType d = a_board.check_coordinate(i, j+3);
-            dangerous_configs.fours += get_fours(a, b, c, d, who); if(dangerous_configs.fours != 0) {return dangerous_configs;}
             dangerous_configs.threes += get_threes(a, b, c, d, who);
             dangerous_configs.twos += get_twos(a, b, c, d, who);
         }
@@ -160,7 +153,6 @@ MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_
             TokenType b = a_board.check_coordinate(i+1, j);
             TokenType c = a_board.check_coordinate(i+2, j);
             TokenType d = a_board.check_coordinate(i+3, j);
-            dangerous_configs.fours += get_fours(a, b, c, d, who); if(dangerous_configs.fours != 0) {return dangerous_configs;}
             dangerous_configs.threes += get_threes(a, b, c, d, who);
             dangerous_configs.twos += get_twos(a, b, c, d, who);
         }
@@ -168,12 +160,11 @@ MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_
 
     //ascending diagonal
     for(size_t i = 3; i < width; i++) {
-        for(size_t j = 0; i < height-3; j++) {
+        for(size_t j = 0; j < height-3; j++) {
             TokenType a = a_board.check_coordinate(i, j);
             TokenType b = a_board.check_coordinate(i-1, j+1);
             TokenType c = a_board.check_coordinate(i-2, j+2);
             TokenType d = a_board.check_coordinate(i-3, j+3);
-            dangerous_configs.fours += get_fours(a, b, c, d, who); if(dangerous_configs.fours != 0) {return dangerous_configs;}
             dangerous_configs.threes += get_threes(a, b, c, d, who);
             dangerous_configs.twos += get_twos(a, b, c, d, who);
         }
@@ -186,26 +177,12 @@ MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_
             TokenType b = a_board.check_coordinate(i-1, j-1);
             TokenType c = a_board.check_coordinate(i-2, j-2);
             TokenType d = a_board.check_coordinate(i-3, j-3);
-            dangerous_configs.fours += get_fours(a, b, c, d, who); if(dangerous_configs.fours != 0) {return dangerous_configs;}
             dangerous_configs.threes += get_threes(a, b, c, d, who);
             dangerous_configs.twos += get_twos(a, b, c, d, who);
         }
     }
 
     return dangerous_configs;
-}
-
-int32_t MiniMax::get_fours(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who) {
-    int32_t fours = 0;
-    if(a == who) {fours++;}
-    if(b == who) {fours++;}
-    if(c == who) {fours++;}
-    if(d == who) {fours++;}
-    if(fours == 4) {
-        return 1;
-    } else {
-        return 0;
-    }
 }
 
 int32_t MiniMax::get_threes(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who) {

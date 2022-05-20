@@ -19,7 +19,6 @@ class MiniMax {
         struct DangerousConfigurations {
             uint32_t twos;
             uint32_t threes;
-            uint32_t fours;
         };
 
         enum TerminalNodeState {
@@ -48,7 +47,6 @@ class MiniMax {
         //returns a struct containing the amount of dangerous configurations on the board
         //from a specific player
         DangerousConfigurations get_dangerous_configurations(Board& a_board, TokenType who);
-        inline int32_t get_fours(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who);
         inline int32_t get_threes(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who);
         inline int32_t get_twos(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who);
 
