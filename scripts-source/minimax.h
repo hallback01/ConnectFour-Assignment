@@ -29,6 +29,7 @@ class MiniMax {
         };
 
         inline ValidMoves get_valid_moves(Board& a_board);
+        inline uint8_t get_random_valid_column(Board& a_board);
 
         //the actual recursive minimax function.
         //it copies the given board and returns the best column
