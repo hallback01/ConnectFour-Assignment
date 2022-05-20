@@ -11,7 +11,7 @@ MiniMax::MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height) {
 
 //runs minimax and tries to get the most optimal column which it then returns
 uint8_t MiniMax::get_optimal_move(uint32_t depth) {
-    uint8_t column = 255;
+    uint8_t column = get_random_valid_column(board);
     int32_t score = minimax(board, depth, true, &column);
     return column;
 }
