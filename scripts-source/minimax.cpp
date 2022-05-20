@@ -33,6 +33,8 @@ MiniMax::ValidMoves MiniMax::get_valid_moves(Board& a_board) {
     return valid_moves;
 }
 
+//got help from https://medium.com/analytics-vidhya/artificial-intelligence-at-play-connect-four-minimax-algorithm-explained-3b5fc32e4a4f
+//this website has a really good pseudocode snippet! And explains a lot of how this AI works!
 int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing, uint8_t* out_column) {
 
     //this is a leaf node, so return the score of this board
