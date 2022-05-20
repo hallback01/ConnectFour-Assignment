@@ -270,6 +270,9 @@ void BoardController::ready_ai() {
 
     //get the best move
     uint8_t index = minimax.get_optimal_move(minimax_depth);
+    if(index == 255) {
+        Godot::print("wtf");
+    }
 
     //place it
     float x_position = x_offset + (index * scaled_texture_size);
