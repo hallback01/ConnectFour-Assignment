@@ -16,6 +16,11 @@ class MiniMax {
             uint8_t positions[255];
         };
 
+        struct DangerousConfigurations {
+            uint32_t twos;
+            uint32_t threes;
+        };
+
         enum TerminalNodeState {
             NoValidMoves,
             AIWin,
@@ -23,7 +28,7 @@ class MiniMax {
             NotTerminal,
         };
 
-        ValidMoves get_valid_moves(Board& a_board);
+        inline ValidMoves get_valid_moves(Board& a_board);
 
         //the actual recursive minimax function.
         //it copies the given board and returns the best column
@@ -37,10 +42,13 @@ class MiniMax {
         TerminalNodeState is_terminal_node(Board& a_board);
 
         //needed by the heuristic to get a score aproximation within a board state
-        int32_t board_score(Board& a_board);
-        //uint32_t get_dangerous_twos(TokenType player, Board& a_board);
-        //uint32_t get_dangerous_threes(TokenType player, Board& a_board);
-        //uint32_t get_fours(TokenType player, Board& a_board);
+        inline int32_t board_score(Board& a_board);
+
+        //returns a struct containing the amount of dangerous configurations on the board
+        //from a specific player
+        DangerousConfigurations get_dangerous_configurations(Board& a_board, TokenType who);
+        inline int32_t get_threes(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who);
+        inline int32_t get_twos(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who);
 
     public:
         MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height);

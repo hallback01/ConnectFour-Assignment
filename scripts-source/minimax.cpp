@@ -102,10 +102,6 @@ int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing, uint8_t
     }
 }
 
-int32_t MiniMax::board_score(Board& a_board) {
-    return std::rand() % 10000 - 5000;
-}
-
 MiniMax::TerminalNodeState MiniMax::is_terminal_node(Board& a_board) {
     TokenType victor = a_board.check_victory(nullptr);
     ValidMoves valid_moves = get_valid_moves(a_board);
@@ -120,5 +116,99 @@ MiniMax::TerminalNodeState MiniMax::is_terminal_node(Board& a_board) {
                 return TerminalNodeState::NotTerminal;
             }
         }
+    }
+}
+
+int32_t MiniMax::board_score(Board& a_board) {
+    DangerousConfigurations player_configs = get_dangerous_configurations(a_board, TokenType::Yellow);
+    DangerousConfigurations ai_configs = get_dangerous_configurations(a_board, TokenType::Red);
+    int32_t score = (3 * ai_configs.threes + ai_configs.twos) - (3 * player_configs.threes + player_configs.twos);
+    return score;
+}
+
+MiniMax::DangerousConfigurations MiniMax::get_dangerous_configurations(Board& a_board, TokenType who) {
+
+    DangerousConfigurations dangerous_configs = {0, 0};
+
+    //horizontal
+    for(size_t j = 0; j < height-3; j++) {
+        for(size_t i = 0; i < width; i++) {
+            TokenType a = a_board.check_coordinate(i, j);
+            TokenType b = a_board.check_coordinate(i, j+1);
+            TokenType c = a_board.check_coordinate(i, j+2);
+            TokenType d = a_board.check_coordinate(i, j+3);
+            dangerous_configs.threes += get_threes(a, b, c, d, who);
+            dangerous_configs.twos += get_twos(a, b, c, d, who);
+        }
+    }
+
+    //vertical
+    for(size_t i = 0; i < width-3; i++) {
+        for(size_t j = 0; j < height; j++) {
+            TokenType a = a_board.check_coordinate(i, j);
+            TokenType b = a_board.check_coordinate(i+1, j);
+            TokenType c = a_board.check_coordinate(i+2, j);
+            TokenType d = a_board.check_coordinate(i+3, j);
+            dangerous_configs.threes += get_threes(a, b, c, d, who);
+            dangerous_configs.twos += get_twos(a, b, c, d, who);
+        }
+    }
+
+    //ascending diagonal
+    for(size_t i = 3; i < width; i++) {
+        for(size_t j = 0; i < height-3; j++) {
+            TokenType a = a_board.check_coordinate(i, j);
+            TokenType b = a_board.check_coordinate(i-1, j+1);
+            TokenType c = a_board.check_coordinate(i-2, j+2);
+            TokenType d = a_board.check_coordinate(i-3, j+3);
+            dangerous_configs.threes += get_threes(a, b, c, d, who);
+            dangerous_configs.twos += get_twos(a, b, c, d, who);
+        }
+    }
+
+    //descending diagonal
+    for(size_t i = 3; i < width; i++) {
+        for(size_t j = 3; j < height; j++) {
+            TokenType a = a_board.check_coordinate(i, j);
+            TokenType b = a_board.check_coordinate(i-1, j-1);
+            TokenType c = a_board.check_coordinate(i-2, j-2);
+            TokenType d = a_board.check_coordinate(i-3, j-3);
+            dangerous_configs.threes += get_threes(a, b, c, d, who);
+            dangerous_configs.twos += get_twos(a, b, c, d, who);
+        }
+    }
+
+    return dangerous_configs;
+}
+
+int32_t MiniMax::get_threes(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who) {
+
+    int32_t threes = 0;
+    int32_t blanks = 0;
+    if(a == who) {threes++;} else if(a == TokenType::Empty) {blanks++;}
+    if(b == who) {threes++;} else if(b == TokenType::Empty) {blanks++;}
+    if(c == who) {threes++;} else if(c == TokenType::Empty) {blanks++;}
+    if(d == who) {threes++;} else if(d == TokenType::Empty) {blanks++;}
+
+    if(threes == 3 && blanks == 1) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int32_t MiniMax::get_twos(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who) {
+
+    int32_t twos = 0;
+    int32_t blanks = 0;
+    if(a == who) {twos++;} else if(a == TokenType::Empty) {blanks++;}
+    if(b == who) {twos++;} else if(b == TokenType::Empty) {blanks++;}
+    if(c == who) {twos++;} else if(c == TokenType::Empty) {blanks++;}
+    if(d == who) {twos++;} else if(d == TokenType::Empty) {blanks++;}
+
+    if(twos == 2 && blanks == 2) {
+        return 1;
+    } else {
+        return 0;
     }
 }
