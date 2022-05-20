@@ -1,6 +1,5 @@
 #include "minimax.h"
 #include "board.h"
-#include <cassert>
 
 MiniMax::MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height) {
     board = a_board;

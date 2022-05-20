@@ -1,6 +1,8 @@
 # ConnectFour-Assignment
 An artificial intelligence assignment in school. I chose to recreate the classical game "connect four", using Godot 3.4.4 with c++(GDNative) as the scripting langauge.
 
+The technology used to implement the AI is minimax.
+
 # Build requirements
 Python 3.4 or higher
 
