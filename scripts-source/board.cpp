@@ -87,8 +87,8 @@ TokenType Board::check_victory(VictoryTokenCoordinates* vtc) {
             TokenType d = check_coordinate(i, j+3);
             TokenType check = are_four_coordinates_same(a, b, c, d);
             if(check != TokenType::Empty) {
-                godot::Godot::print("horizontal win");
-                print_board();
+                //godot::Godot::print("horizontal win");
+                //print_board();
 
                 //fill the victory token coordinate struct
                 if(vtc) {
@@ -112,8 +112,8 @@ TokenType Board::check_victory(VictoryTokenCoordinates* vtc) {
             TokenType d = check_coordinate(i+3, j);
             TokenType check = are_four_coordinates_same(a, b, c, d);
             if(check != TokenType::Empty) {
-                godot::Godot::print("vertical win");
-                print_board();
+                //godot::Godot::print("vertical win");
+                //print_board();
 
                 //fill the victory token coordinate struct
                 if(vtc) {
@@ -137,8 +137,8 @@ TokenType Board::check_victory(VictoryTokenCoordinates* vtc) {
             TokenType d = check_coordinate(i-3, j+3);
             TokenType check = are_four_coordinates_same(a, b, c, d);
             if(check != TokenType::Empty) {
-                godot::Godot::print("ascending diagonal win");
-                print_board();
+                //godot::Godot::print("ascending diagonal win");
+                //print_board();
 
                 //fill the victory token coordinate struct
                 if(vtc) {
@@ -162,8 +162,8 @@ TokenType Board::check_victory(VictoryTokenCoordinates* vtc) {
             TokenType d = check_coordinate(i-3, j-3);
             TokenType check = are_four_coordinates_same(a, b, c, d);
             if(check != TokenType::Empty) {
-                godot::Godot::print("descending diagonal win");
-                print_board();
+                //godot::Godot::print("descending diagonal win");
+                //print_board();
 
                 //fill the victory token coordinate struct
                 if(vtc) {
