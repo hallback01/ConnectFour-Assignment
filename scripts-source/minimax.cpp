@@ -119,6 +119,7 @@ MiniMax::TerminalNodeState MiniMax::is_terminal_node(Board& a_board) {
     }
 }
 
+//got the heuristic from this website https://www.madjakul.com/en/posts/minimax_connect4/#checking-for-connected-3-and-connected-2
 int32_t MiniMax::board_score(Board& a_board) {
     DangerousConfigurations player_configs = get_dangerous_configurations(a_board, TokenType::Yellow);
     DangerousConfigurations ai_configs = get_dangerous_configurations(a_board, TokenType::Red);
