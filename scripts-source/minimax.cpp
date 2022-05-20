@@ -39,68 +39,57 @@ MiniMax::ValidMoves MiniMax::get_valid_moves(Board& a_board) {
 int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing, uint8_t* out_column) {
 
     //this is a leaf node, so return the score of this board
-    if(depth == 0) {
-        return board_score(a_board);
-    }
-
-    //what do we want to do otherwise?
-    switch(is_terminal_node(a_board)) {
+    TerminalNodeState tns = is_terminal_node(a_board);
+    if(depth == 0 || tns != TerminalNodeState::NotTerminal) { //if depth is 0 or it is terminal
 
         //the AI has gotten a connect four
-        case TerminalNodeState::AIWin: {
+        if(tns == TerminalNodeState::AIWin) {
             return MAX_SCORE;
-        }
-
-        //the player has gotten a connect four
-        case TerminalNodeState::PlayerWin: {
+        } else if(tns == TerminalNodeState::PlayerWin) { //the player has gotten a connect four
             return MIN_SCORE;
-        }
-
-        //game over.. (draw..?) there are no valid moves left
-        case TerminalNodeState::NoValidMoves: {
+        } else if(tns == TerminalNodeState::NoValidMoves) { //game over.. (draw..?) there are no valid moves left
             return 0;
+        } else { //the depth is 0
+            return board_score(a_board);
         }
+    } else { //otherwise the game continues
 
-        //the game continues!
-        case TerminalNodeState::NotTerminal: {
+        //gather the valid moves
+        ValidMoves valid_moves = get_valid_moves(a_board);
 
-            //gather the valid moves
-            ValidMoves valid_moves = get_valid_moves(a_board);
+        //try to get the highest score possible
+        if(maximizing) {
 
-            //try to get the highest score possible
-            if(maximizing) {
-
-                int32_t value = MIN_SCORE;
-                
-                //for every column, run minimax on a board copy
-                for(uint8_t i = 0; i < valid_moves.amount; i++) {
-                    uint8_t column = valid_moves.positions[i];
-                    Board board_copy = a_board;
-                    board_copy.place_token(column, TokenType::Red);
-                    int32_t new_value = minimax(board_copy, depth - 1, false, nullptr); //we don't need to pass a column pointer here
-                    if(new_value > value) {
-                        value = new_value;
-                        if(out_column) {*out_column = column;}
-                    }
+            int32_t value = MIN_SCORE;
+            
+            //for every column, run minimax on a board copy
+            for(uint8_t i = 0; i < valid_moves.amount; i++) {
+                uint8_t column = valid_moves.positions[i];
+                Board board_copy = a_board;
+                board_copy.place_token(column, TokenType::Red);
+                int32_t new_value = minimax(board_copy, depth - 1, false, nullptr); //we don't need to pass a column pointer here
+                if(new_value > value) {
+                    value = new_value;
+                    if(out_column) {*out_column = column;}
                 }
-                return value;
-
-            } else { //try to get the lowest score possible
-
-                int32_t value = MAX_SCORE;
-
-                for(uint8_t i = 0; i < valid_moves.amount; i++) {
-                    uint8_t column = valid_moves.positions[i];
-                    Board board_copy = a_board;
-                    board_copy.place_token(column, TokenType::Yellow);
-                    int32_t new_value = minimax(board_copy, depth - 1, true, nullptr); //we don't need to pass a column pointer here
-                    if(new_value < value) {
-                        value = new_value;
-                        if(out_column) {*out_column = column;}
-                    }
-                }
-                return value;
             }
+            return value;
+
+        } else { //try to get the lowest score possible
+
+            int32_t value = MAX_SCORE;
+
+            for(uint8_t i = 0; i < valid_moves.amount; i++) {
+                uint8_t column = valid_moves.positions[i];
+                Board board_copy = a_board;
+                board_copy.place_token(column, TokenType::Yellow);
+                int32_t new_value = minimax(board_copy, depth - 1, true, nullptr); //we don't need to pass a column pointer here
+                if(new_value < value) {
+                    value = new_value;
+                    if(out_column) {*out_column = column;}
+                }
+            }
+            return value;
         }
     }
 }
