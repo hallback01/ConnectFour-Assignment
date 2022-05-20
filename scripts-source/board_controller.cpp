@@ -268,11 +268,8 @@ void BoardController::ready_ai() {
     //start minimax
     MiniMax minimax(board, width, height);
 
-    //run minmax at specified depth
-    minimax.run(2);
-
     //get the best move
-    uint8_t index = minimax.get_optimal_move();
+    uint8_t index = minimax.get_optimal_move(minimax_depth);
 
     //place it
     float x_position = x_offset + (index * scaled_texture_size);

@@ -9,26 +9,11 @@ MiniMax::MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height) {
     is_done = false;
 }
 
-//after the minimax has executed, this function returns the index of the most
-//optimal column for the AI to choose
-uint8_t MiniMax::get_optimal_move() {
-
-    //the run function must have been called before this function.
-    //"is_done" is set to true after it is done calculating
-    assert(!is_done);
-
-    //now we choose one randomly for now
-    uint8_t index = rand() % width;
-    while(board.is_column_full(index)) {
-        index = rand() % width;
-    }
-
-    return index;
-}
-
-//executes the minimax at a given depth
-void MiniMax::run(uint32_t depth) {
-
+//runs minimax and tries to get the most optimal column which it then returns
+uint8_t MiniMax::get_optimal_move(uint32_t depth) {
+    uint8_t column = 255;
+    int32_t score = minimax(board, depth, true, &column);
+    return column;
 }
 
 //this function checks every column if it's full.
@@ -49,7 +34,7 @@ MiniMax::ValidMoves MiniMax::get_valid_moves(Board& a_board) {
     return valid_moves;
 }
 
-int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing) {
+int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing, uint8_t* out_column) {
 
     //this is a leaf node, so return the score of this board
     if(depth == 0) {
@@ -90,7 +75,11 @@ int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing) {
                     uint8_t column = valid_moves.positions[i];
                     Board board_copy = a_board;
                     board_copy.place_token(column, TokenType::Red);
-                    value = std::max(value, minimax(board_copy, depth - 1, false));
+                    int32_t new_value = minimax(board_copy, depth - 1, false, nullptr); //we don't need to pass a column pointer here
+                    if(new_value > value) {
+                        value = new_value;
+                        if(out_column) {*out_column = column;}
+                    }
                 }
                 return value;
 
@@ -102,9 +91,12 @@ int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing) {
                     uint8_t column = valid_moves.positions[i];
                     Board board_copy = a_board;
                     board_copy.place_token(column, TokenType::Yellow);
-                    value = std::min(value, minimax(board_copy, depth - 1, true));
+                    int32_t new_value = minimax(board_copy, depth - 1, true, nullptr); //we don't need to pass a column pointer here
+                    if(new_value < value) {
+                        value = new_value;
+                        if(out_column) {*out_column = column;}
+                    }
                 }
-
                 return value;
             }
         }
@@ -112,7 +104,7 @@ int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing) {
 }
 
 int32_t MiniMax::board_score(Board& a_board) {
-    return 100;
+    return std::rand() % 10000 - 5000;
 }
 
 MiniMax::TerminalNodeState MiniMax::is_terminal_node(Board& a_board) {

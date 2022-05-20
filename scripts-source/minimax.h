@@ -27,7 +27,7 @@ class MiniMax {
 
         //the actual recursive minimax function.
         //it copies the given board and returns the best column
-        int32_t minimax(Board a_board, uint32_t depth, bool maximizing);
+        int32_t minimax(Board a_board, uint32_t depth, bool maximizing, uint8_t* out_column);
 
         //checks if a board is terminal.
         //the conditions are (in order):
@@ -44,6 +44,5 @@ class MiniMax {
 
     public:
         MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height);
-        void run(uint32_t depth);
-        uint8_t get_optimal_move();
+        uint8_t get_optimal_move(uint32_t depth);
 };
