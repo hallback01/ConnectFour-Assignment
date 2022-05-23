@@ -4,9 +4,9 @@ An artificial intelligence assignment in school. I chose to recreate the classic
 The technology used to implement the AI is minimax.
 
 # Build requirements
-Python 3.4 or higher
+Python 3.4 or higher (required for godot-cpp)
 
-CMake 3.18 or higher
+CMake 3.6 or higher
 
 A C++ compiler with at least the c++14 standard. Tested with MSVC(On windows 10) and Clang(On macOS).
 
