@@ -79,6 +79,12 @@ int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing, uint8_t
                     if(out_column) {*out_column = column;}
                 }
 
+                lambda_max(value, new_value, []() {
+                    if(out_column) {
+                        *out_column = column;
+                    }
+                });
+
                 //alpha beta
                 alpha = std::max(alpha, value);
                 if(value >= beta) {
@@ -221,5 +227,19 @@ int32_t MiniMax::get_twos(TokenType a, TokenType b, TokenType c, TokenType d, To
         return 1;
     } else {
         return 0;
+    }
+}
+
+/*
+    Compares two values and returns the largest.
+    If the second value was the largest value, then the function
+    provided will be executed.
+*/
+int32_t lambda_max(int32_t value1, int32_t value2, std::function<void> function) {
+    if(value2 > value1) {
+        function();
+        return value2;
+    } else {
+        return value1;
     }
 }
