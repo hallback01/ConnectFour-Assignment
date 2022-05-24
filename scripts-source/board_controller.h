@@ -16,6 +16,14 @@ namespace godot {
     class BoardController : public Node2D {
         GODOT_CLASS(BoardController, Node2D)
 
+        public:
+            static void _register_methods();
+
+            void _init();
+            void _ready();
+            void _process(float delta);
+            void _draw();
+            
         private:
 
             enum Turn {
@@ -65,13 +73,6 @@ namespace godot {
             uint8_t get_token_index(const Vector2 position);
             void animate_token(float delta);
 
-        public:
-            static void _register_methods();
-
-            void _init();
-            void _ready();
-            void _process(float delta);
-            void _draw();
     };
 
 }

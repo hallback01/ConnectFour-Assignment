@@ -20,13 +20,6 @@ struct VictoryTokenCoordinates {
 
 class Board {
 
-    private:
-        std::vector<std::vector<TokenType>> tokens; //x, y
-        uint8_t height;
-        uint8_t width;
-        TokenType are_four_coordinates_same(TokenType a, TokenType b, TokenType c, TokenType d);
-        void print_board();
-
     public:
         Board();
         Board(uint8_t a_width, uint8_t a_height);
@@ -36,4 +29,11 @@ class Board {
         void place_token(uint8_t index, TokenType token_type);
         TokenType check_coordinate(uint8_t x, uint8_t y);
         TokenType check_victory(VictoryTokenCoordinates* vtc);
+
+    private:
+        std::vector<std::vector<TokenType>> tokens; //x, y
+        uint8_t height;
+        uint8_t width;
+        TokenType are_four_coordinates_same(TokenType a, TokenType b, TokenType c, TokenType d);
+        void print_board();
 };

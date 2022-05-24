@@ -2,6 +2,9 @@
 #include "board.h"
 
 class MiniMax {
+    public:
+        MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height);
+        uint8_t get_optimal_move(uint32_t depth);
 
     private:
         Board board; // <- start board
@@ -51,7 +54,4 @@ class MiniMax {
         inline int32_t get_threes(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who);
         inline int32_t get_twos(TokenType a, TokenType b, TokenType c, TokenType d, TokenType who);
 
-    public:
-        MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height);
-        uint8_t get_optimal_move(uint32_t depth);
 };
