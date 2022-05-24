@@ -1,6 +1,7 @@
 #include "minimax.h"
 #include "board.h"
 #include <Godot.hpp>
+#include <functional>
 
 MiniMax::MiniMax(Board& a_board, uint8_t a_width, uint8_t a_height) {
     board = a_board;
@@ -40,8 +41,34 @@ uint8_t MiniMax::get_random_valid_column(Board& a_board) {
     return valid.positions[i];
 }
 
-//got help from https://medium.com/analytics-vidhya/artificial-intelligence-at-play-connect-four-minimax-algorithm-explained-3b5fc32e4a4f
-//this website has a really good pseudocode snippet! And explains a lot of how this AI works!
+/*
+    Compares two values and returns the largest.
+    If the second value was the largest value, then the function
+    provided will be executed.
+*/
+int32_t lambda_max(int32_t value1, int32_t value2, std::function<void()> function) {
+    if(value2 > value1) {
+        function();
+        return value2;
+    } else {
+        return value1;
+    }
+}
+
+/*
+    Compares two values and returns the smallest.
+    If the second value was the smallest value, then the function
+    provided will be executed.
+*/
+int32_t lambda_min(int32_t value1, int32_t value2, std::function<void()> function) {
+    if(value2 < value1) {
+        function();
+        return value2;
+    } else {
+        return value1;
+    }
+}
+
 int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing, uint8_t* out_column, int32_t alpha, int32_t beta) {
 
     //this is a leaf node, so return the score of this board
@@ -73,13 +100,9 @@ int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing, uint8_t
                 uint8_t column = valid_moves.positions[i];
                 Board board_copy = a_board;
                 board_copy.place_token(column, TokenType::Red);
-                int32_t new_value = minimax(board_copy, depth - 1, false, nullptr, alpha, beta); //we don't need to pass a column pointer here
-                if(new_value > value) {
-                    value = new_value;
-                    if(out_column) {*out_column = column;}
-                }
+                value = lambda_max(value, minimax(board_copy, depth - 1, false, nullptr, alpha, beta), [&]() {
 
-                lambda_max(value, new_value, []() {
+                    //we want to set the correct column to choose (but only if a pointer is provided, since we don't want to get the column deeper than the first step)
                     if(out_column) {
                         *out_column = column;
                     }
@@ -101,11 +124,13 @@ int32_t MiniMax::minimax(Board a_board, uint32_t depth, bool maximizing, uint8_t
                 uint8_t column = valid_moves.positions[i];
                 Board board_copy = a_board;
                 board_copy.place_token(column, TokenType::Yellow);
-                int32_t new_value = minimax(board_copy, depth - 1, true, nullptr, alpha, beta); //we don't need to pass a column pointer here
-                if(new_value < value) {
-                    value = new_value;
-                    if(out_column) {*out_column = column;}
-                }
+                value = lambda_min(value, minimax(board_copy, depth - 1, true, nullptr, alpha, beta), [&]() {
+
+                    //same here, set the column
+                    if(out_column) {
+                        *out_column = column;
+                    }
+                });
 
                 //alpha beta
                 beta = std::min(beta, value);
@@ -227,19 +252,5 @@ int32_t MiniMax::get_twos(TokenType a, TokenType b, TokenType c, TokenType d, To
         return 1;
     } else {
         return 0;
-    }
-}
-
-/*
-    Compares two values and returns the largest.
-    If the second value was the largest value, then the function
-    provided will be executed.
-*/
-int32_t lambda_max(int32_t value1, int32_t value2, std::function<void> function) {
-    if(value2 > value1) {
-        function();
-        return value2;
-    } else {
-        return value1;
     }
 }
