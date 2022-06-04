@@ -158,6 +158,8 @@ MiniMax::TerminalNodeState MiniMax::is_terminal_node(Board& a_board) {
             }
         }
     }
+
+	return TerminalNodeState::NotTerminal;
 }
 
 //got the heuristic from this website https://www.madjakul.com/en/posts/minimax_connect4/#checking-for-connected-3-and-connected-2

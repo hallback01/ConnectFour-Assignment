@@ -1,4 +1,5 @@
 #pragma once
+#include <limits>
 #include "board.h"
 
 class MiniMax {
